@@ -32,13 +32,13 @@ e.g.
 ```
 
 `${ZOOM_LEVEL}` will start at `0` and go up to the maximum zoom possible for the `${SOURCE_IMAGE}` without enlarging it.
-Each `tile` has a dimension of 256x256 and each ${ZOOM_LEVEL} goes up in dimensions of `2^${ZOOM_LEVEL}` (i.e. 1x1, 2x2, 4x4, 8x8, 16x16 etc.).
+Each `tile` has a dimension of 256x256 and each `${ZOOM_LEVEL}` goes up in dimensions of `2^${ZOOM_LEVEL}` (i.e. 1x1, 2x2, 4x4, 8x8, 16x16 etc.).
 So overall, for each zoom level, the resulting map resolution will be 256x256, 512x512, 1024x1024, 2048x2048 and so on.
 
 If you're using Leaflet, I suggest you set this maximum zoom as your `map.maxNativeZoom` so you can have higher zoom
 levels without the need to download larger, low quality, upscaled tiles.
 
-If a ${ZOOM_LEVEL} folder already exists, it will be skipped.
+If a `${ZOOM_LEVEL}` directory already exists, it will be skipped.
 
 ## License
 
