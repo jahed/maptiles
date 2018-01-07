@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-source=$1
-dest_path=$2
-tile_format=$3
+source="${1}"
+dest_path="${2}"
+tile_format="${3}"
 
 if [ ! -f ${source} ] || [ -z ${dest_path} ]; then
     echo "Usage: ${0} SOURCE_IMAGE TILES_DESTINATION_DIR [TILE_FORMAT]"
@@ -47,7 +47,7 @@ for ((zoom=0, resize=0; resize < original_size; zoom++)); do
 	    -resize ${resize}x${resize} \
 	    -colorspace sRGB \
 	    -crop ${tile_size}x${tile_size} \
-	    -set filename:tile "%[fx:page.x/${tile_size}]_%[fx:page.y/${tile_size}]"\
+	    -set filename:tile "%[fx:page.x/${tile_size}]_%[fx:page.y/${tile_size}]" \
 	    +repage \
         +adjoin \
         "${dest_path}/${zoom}/tile_%[filename:tile].${tile_format}"
