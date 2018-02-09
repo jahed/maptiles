@@ -1,5 +1,7 @@
 # im-map-tiles
 
+[![Patreon](https://img.shields.io/badge/patreon-donate-f96854.svg)](https://www.patreon.com/jahed)
+
 Map Tile Generator for Google Maps, Leaflet and other Map libraries using ImageMagick.
 
 ## Dependencies
