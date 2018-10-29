@@ -44,6 +44,7 @@ for ((zoom=0, resize=0; resize < original_size; zoom++)); do
 	convert ${source} \
 	    -colorspace RGB \
 	    -filter Lanczos2 \
+	    -background none \
 	    -resize ${resize}x${resize} \
 	    -colorspace sRGB \
 	    -crop ${tile_size}x${tile_size} \
