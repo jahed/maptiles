@@ -1,12 +1,14 @@
 # im-map-tiles
 
-[![Patreon](https://img.shields.io/badge/patreon-donate-f96854.svg)](https://www.patreon.com/jahed)
-
 Map Tile Generator for Google Maps, Leaflet and other Map libraries using ImageMagick.
+
+[![Discord Chat](https://img.shields.io/badge/discord-chat-7289da.svg)](https://discord.gg/crmfAsJ)
+[![Patreon](https://img.shields.io/badge/patreon-donate-f96854.svg)](https://www.patreon.com/jahed)
 
 ## Dependencies
 
-- ImageMagick
+- [ImageMagick](https://www.imagemagick.org)
+- [Bash](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29)
 
 ## Usage
 
@@ -48,4 +50,4 @@ If a `${ZOOM_LEVEL}` directory already exists, it will be skipped.
 
 ## License
 
-See `LICENSE` file.
+[MIT](LICENSE)
