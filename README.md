@@ -48,6 +48,16 @@ without the need to download larger, low quality, upscaled tiles.
 
 If a `${ZOOM_LEVEL}` directory already exists, it will be skipped.
 
+## FAQ
+
+### Is Graphics Magick supported?
+
+While I would've preferred using Graphics Magick for this script, it does not support the syntax used to generate the filename of each tile (tile_1_2.png, tile_2_3.png, etc.).
+
+Graphics Magick does support iterative names (tile_01.png, tile_02.png, etc.), which could be calculated using known X/Y coordinates but that's not typically how map tiles are named. Following this approach however, an alternative is to rename the tiles after they're generated, but that's just more work for something Image Magick does for free.
+
+The aim for this script is to be as simple as possible so feel free to modify it to your specific use cases.
+
 ## License
 
 [MIT](LICENSE)
