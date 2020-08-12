@@ -19,10 +19,19 @@ OPTIONS
     Image to convert into tiles. Must exist. Must be square.
   
   <output_directory>
-    Output directory. Must NOT exist.
+    Output directory. Must NOT exist, to avoid polluting existing directories.
   
   -f, --format <format>
     Tile format (e.g. 'png'). Defaults to <input_image> file extension.
+
+  -o, --optimise (lossy|lossless)
+    Optimises tiles depending on the <format>.
+    
+    png uses pngquant (lossy) or optipng (lossless)
+    jpg uses jpegtran (lossless)
+
+    Lossy optimisations may cause a size increase depending on each tile's
+    complexity. Only use it for maps which store a lot of detail per tile.
 
   -h, --help
     Prints this help message.
@@ -47,8 +56,14 @@ OUTPUT
   download larger, low quality, upscaled tiles.
 
 DEPENDENCIES
-  ImageMagick  https://www.imagemagick.org
-  Bash         https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
+  Required
+    ImageMagick  https://www.imagemagick.org
+    Bash         https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
+
+  Optional
+    pngquant    https://pngquant.org/
+    optipng     http://optipng.sourceforge.net/
+    jpegtran    https://jpegclub.org/jpegtran/
 
 COPYRIGHT
   The MIT License (MIT)
@@ -76,6 +91,11 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    -o|--optimise)
+      optimise="$2"
+      shift
+      shift
+      ;;
     *)
     POSITIONAL+=("$1")
     shift
@@ -94,7 +114,6 @@ fi
 if [ -z ${output_directory} ]; then
   failure "<output_directory> not given."
 fi
-
 
 if [ -d "${output_directory}" ] || [ -f "${output_directory}" ]; then
   failure "<output_directory> must not exist."
@@ -135,13 +154,29 @@ for ((zoom_level=0, resize=0; resize < input_width; zoom_level++)); do
     "${output_directory}/${zoom_level}/tile_%[filename:tile].${format}"
 done
 
+if [ ! -z ${optimise} ]; then
+  echo
+  echo "OPTIMISING"
+  if [[ "${format}" == "png" ]]; then
+    if [[ "${optimise}" == "lossy" ]]; then
+      find "${output_directory}" -type f -regex '.+\.png' -print0 | xargs -0 -L 1 -I % pngquant --speed 1 --ext '.png' --quiet --force '%'
+    else
+      find "${output_directory}" -type f -regex '.+\.png' -print0 | xargs -0 -L 1 -I % optipng -quiet -out '%' '%'
+    fi
+  elif [[ "${format}" == "jpg" ]]; then
+    find "${output_directory}" -type f -regex '.+\.jpg' -print0 | xargs -0 -L 1 -I % jpegtran -optimize -copy none -progressive -outfile '%' '%'
+  else
+    echo "  No optimiser found for output format (${format})."
+  fi
+fi
+
 cat <<EOF
 
 RESULT
-  Input Image:      ${input_image}
-  Output Directory: ${output_directory}
-  Format:           ${format}
-  Max Zoom:         $((${zoom_level} - 1))
+  Input Image:       ${input_image}
+  Output Directory:  ${output_directory}
+  Format:            ${format}
+  Maximum Zoom:      $((${zoom_level} - 1))
 
 Done.
 EOF

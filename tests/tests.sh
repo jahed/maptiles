@@ -61,6 +61,11 @@ echo 'TEST: Generates map tiles.'
 assert_dir basic
 
 echo
+echo 'TEST: Optimises map tiles.'
+./im-map-tiles.sh "${input_dir}/512x512.png" --optimise "lossy" "${output_dir}/optimise"
+assert_dir optimise
+
+echo
 echo 'TEST: Upscales source image.'
 ./im-map-tiles.sh "${input_dir}/500x500.png" "${output_dir}/scaleup"
 assert_dir scaleup

@@ -28,10 +28,19 @@ OPTIONS
     Image to convert into tiles. Must exist. Must be square.
   
   <output_directory>
-    Output directory. Must NOT exist.
+    Output directory. Must NOT exist, to avoid polluting existing directories.
   
   -f, --format <format>
     Tile format (e.g. 'png'). Defaults to <input_image> file extension.
+
+  -o, --optimise (lossy|lossless)
+    Optimises tiles depending on the <format>.
+    
+    png uses pngquant (lossy) or optipng (lossless)
+    jpg uses jpegtran (lossless)
+
+    Lossy optimisations may cause a size increase depending on each tile's
+    complexity. Only use it for maps which store a lot of detail per tile.
 
   -h, --help
     Prints this help message.
@@ -56,8 +65,14 @@ OUTPUT
   download larger, low quality, upscaled tiles.
 
 DEPENDENCIES
-  ImageMagick  https://www.imagemagick.org
-  Bash         https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
+  Required
+    ImageMagick  https://www.imagemagick.org
+    Bash         https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29
+
+  Optional
+    pngquant    https://pngquant.org/
+    optipng     http://optipng.sourceforge.net/
+    jpegtran    https://jpegclub.org/jpegtran/
 
 COPYRIGHT
   The MIT License (MIT)
