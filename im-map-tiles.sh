@@ -5,51 +5,44 @@ dest_path="${2}"
 tile_format="${3}"
 
 if [ ! -f ${source} ] || [ -z ${dest_path} ]; then
-    echo "Usage: ${0} SOURCE_IMAGE TILES_DESTINATION_DIR [TILE_FORMAT]"
-    echo
-    echo "SOURCE_IMAGE must exist."
-    echo "TILE_FORMAT defaults to 'png'."
-    exit 1
+  echo "Usage: ${0} SOURCE_IMAGE TILES_DESTINATION_DIR [TILE_FORMAT]"
+  echo
+  echo "SOURCE_IMAGE must exist."
+  echo "TILE_FORMAT defaults to SOURCE_IMAGE extension."
+  exit 1
 fi
 
-if [ ! -d ${dest_path} ]; then
-    mkdir ${dest_path}
+source_width=$(identify -format '%[w]' "${source}")
+source_height=$(identify -format '%[h]' "${source}")
+if [ "${source_width}" != "${source_height}" ]; then
+  echo "SOURCE_IMAGE must be square (e.g. 1000x1000), but was ${source_width}x${source_height}."
+  exit 1
 fi
 
 if [ -z ${tile_format} ]; then
-    tile_format='png'
+  tile_format=$(identify -format '%[e]' "${source}")
 fi
 
-original_size=$(identify ${source} | cut -d' ' -f3 | cut -d'x' -f1)
-if [ -z ${original_size} ]; then
-    echo "Could not retrieve image dimensions."
-    exit 1
-fi
-
+mkdir -p "${dest_path}"
 tile_size=256
-set -x
 
-for ((zoom=0, resize=0; resize < original_size; zoom++)); do
-    dimensions=$((2 ** ${zoom}))
-	resize=$((${tile_size} * ${dimensions}))
+for ((zoom=0, resize=0; resize < source_width; zoom++)); do
+  dimensions=$((2 ** ${zoom}))
+  resize=$((${tile_size} * ${dimensions}))
 
-    if [ -d ${dest_path}/${zoom} ]; then
-        echo "Zoom ${zoom} directory already exists. Skipping."
-        continue
-    fi
+  zoom_dir="${dest_path}/${zoom}"
+  echo "Generating tiles for ${zoom_dir}"
+  mkdir "${zoom_dir}"
 
-    echo "Generating tiles for Zoom ${zoom}"
-	mkdir ${dest_path}/${zoom}
-
-	convert ${source} \
-	    -colorspace RGB \
-	    -filter Lanczos2 \
-	    -background none \
-	    -resize ${resize}x${resize} \
-	    -colorspace sRGB \
-	    -crop ${tile_size}x${tile_size} \
-	    -set filename:tile "%[fx:page.x/${tile_size}]_%[fx:page.y/${tile_size}]" \
-	    +repage \
-        +adjoin \
-        "${dest_path}/${zoom}/tile_%[filename:tile].${tile_format}"
+  convert "${source}" \
+    -colorspace RGB \
+    -filter Lanczos2 \
+    -background none \
+    -resize "${resize}x${resize}" \
+    -colorspace sRGB \
+    -crop "${tile_size}x${tile_size}" \
+    -set filename:tile "%[fx:page.x/${tile_size}]_%[fx:page.y/${tile_size}]" \
+    +repage \
+    +adjoin \
+    "${dest_path}/${zoom}/tile_%[filename:tile].${tile_format}"
 done
