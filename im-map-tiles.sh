@@ -5,11 +5,20 @@ dest_path="${2}"
 tile_format="${3}"
 
 if [ ! -f ${source} ] || [ -z ${dest_path} ]; then
-  echo "Usage: ${0} SOURCE_IMAGE TILES_DESTINATION_DIR [TILE_FORMAT]"
+  echo "Usage: ${0} SOURCE_IMAGE DESTINATION_DIR [TILE_FORMAT]"
   echo
   echo "SOURCE_IMAGE must exist."
   echo "TILE_FORMAT defaults to SOURCE_IMAGE extension."
   exit 1
+fi
+
+if [ -d "${dest_path}" ] || [ -f "${dest_path}" ]; then
+  echo "DESTINATION_DIR must not exist."
+  exit 1
+fi
+
+if [ -z ${tile_format} ]; then
+  tile_format=$(identify -format '%[e]' "${source}")
 fi
 
 source_width=$(identify -format '%[w]' "${source}")
@@ -17,10 +26,6 @@ source_height=$(identify -format '%[h]' "${source}")
 if [ "${source_width}" != "${source_height}" ]; then
   echo "SOURCE_IMAGE must be square (e.g. 1000x1000), but was ${source_width}x${source_height}."
   exit 1
-fi
-
-if [ -z ${tile_format} ]; then
-  tile_format=$(identify -format '%[e]' "${source}")
 fi
 
 mkdir -p "${dest_path}"

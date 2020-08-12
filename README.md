@@ -15,7 +15,7 @@ Map Tile Generator for Google Maps, Leaflet and other Map libraries using ImageM
 
 ```sh
 $ ./im-map-tiles.sh 
-Usage: ./im-map-tiles.sh SOURCE_IMAGE TILES_DESTINATION_DIR [TILE_FORMAT]
+Usage: ./im-map-tiles.sh SOURCE_IMAGE DESTINATION_DIR [TILE_FORMAT]
 
 SOURCE_IMAGE must exist.
 TILE_FORMAT defaults to SOURCE_IMAGE extension.
@@ -24,7 +24,7 @@ TILE_FORMAT defaults to SOURCE_IMAGE extension.
 Output will take the format of:
 
 ```
-${TILES_DESTINATION_DIR}/${ZOOM_LEVEL}/tile_${X}_${Y}.${TILE_FORMAT}
+${DESTINATION_DIR}/${ZOOM_LEVEL}/tile_${X}_${Y}.${TILE_FORMAT}
 ```
 
 e.g.

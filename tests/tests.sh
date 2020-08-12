@@ -26,7 +26,8 @@ function assert_dir {
 
 function assert_failure {
   set +e
-  exit_code=$(${1})
+  ${@} &> /dev/null
+  local exit_code="${?}"
   set -e
   if [[ "${exit_code}" == "0" ]]; then
     echo 'Expected command to fail.'
@@ -51,6 +52,9 @@ create_input 250x500
 rm -rf "${output_dir}"
 mkdir "${output_dir}"
 
+echo "Inputs: ${input_dir}"
+echo "Outputs: ${output_dir}"
+
 echo 'Test Case: Generates map tiles.'
 ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/basic" &> /dev/null
 assert_dir basic
@@ -64,14 +68,18 @@ echo 'Test Case: Generates using given format.'
 assert_dir format
 
 echo 'Test Case: Rejects non-existing source image.'
-assert_failure "./im-map-tiles.sh \"${input_dir}/doesnotexist.png\" \"${output_dir}/doesnotexist\" &> /dev/null"
+assert_failure ./im-map-tiles.sh "${input_dir}/doesnotexist.png" "${output_dir}/doesnotexist"
 if [ -d "${output_dir}/doesnotexist" ]; then
   echo "Output directory should not exist."
   exit 1
 fi
 
+echo 'Test Case: Rejects existing destination directory.'
+mkdir "${output_dir}/exists"
+assert_failure ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/exists"
+
 echo 'Test Case: Rejects non-square source image.'
-assert_failure "./im-map-tiles.sh \"${input_dir}/250x500.png\" \"${output_dir}/nonsquare\" &> /dev/null"
+assert_failure ./im-map-tiles.sh "${input_dir}/250x500.png" "${output_dir}/nonsquare"
 if [ -d "${output_dir}/nonsquare" ]; then
   echo "Output directory should not exist."
   exit 1
