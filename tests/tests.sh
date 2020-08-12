@@ -26,7 +26,7 @@ function assert_dir {
 
 function assert_failure {
   set +e
-  ${@} &> /dev/null
+  ${@}
   local exit_code="${?}"
   set -e
   if [[ "${exit_code}" == "0" ]]; then
@@ -55,34 +55,45 @@ mkdir "${output_dir}"
 echo "Inputs: ${input_dir}"
 echo "Outputs: ${output_dir}"
 
-echo 'Test Case: Generates map tiles.'
-./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/basic" &> /dev/null
+echo
+echo 'TEST: Generates map tiles.'
+./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/basic"
 assert_dir basic
 
-echo 'Test Case: Upscales source image.'
-./im-map-tiles.sh "${input_dir}/500x500.png" "${output_dir}/scaleup" &> /dev/null
+echo
+echo 'TEST: Upscales source image.'
+./im-map-tiles.sh "${input_dir}/500x500.png" "${output_dir}/scaleup"
 assert_dir scaleup
 
-echo 'Test Case: Generates using given format.'
-./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/format" jpg &> /dev/null
+echo
+echo 'TEST: Generates using given format.'
+./im-map-tiles.sh "${input_dir}/512x512.png" --format jpg "${output_dir}/format"
 assert_dir format
 
-echo 'Test Case: Rejects non-existing source image.'
+echo
+echo 'TEST: Rejects non-existing source image.'
 assert_failure ./im-map-tiles.sh "${input_dir}/doesnotexist.png" "${output_dir}/doesnotexist"
 if [ -d "${output_dir}/doesnotexist" ]; then
   echo "Output directory should not exist."
   exit 1
 fi
 
-echo 'Test Case: Rejects existing destination directory.'
+echo
+echo 'TEST: Rejects existing destination directory.'
 mkdir "${output_dir}/exists"
 assert_failure ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/exists"
 
-echo 'Test Case: Rejects non-square source image.'
+echo
+echo 'TEST: Rejects non-square source image.'
 assert_failure ./im-map-tiles.sh "${input_dir}/250x500.png" "${output_dir}/nonsquare"
 if [ -d "${output_dir}/nonsquare" ]; then
   echo "Output directory should not exist."
   exit 1
 fi
 
-echo 'Tests passed.'
+echo
+echo 'TEST: Rejects missing arguments.'
+assert_failure ./im-map-tiles.sh
+
+echo
+echo 'All tests passed.'
