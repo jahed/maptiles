@@ -104,6 +104,10 @@ while [[ $# -gt 0 ]]; do
       square="true"
       shift
       ;;
+    -*)
+      failure "unknown argument $1"
+      exit 1
+    ;;
     *)
     POSITIONAL+=("$1")
     shift

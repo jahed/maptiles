@@ -106,4 +106,12 @@ echo 'TEST: Rejects missing arguments.'
 assert_failure ./im-map-tiles.sh
 
 echo
+echo 'TEST: Rejects unknown arguments.'
+assert_failure ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/unknown" --unknown
+if [ -d "${output_dir}/unknown" ]; then
+  echo "Output directory should not exist."
+  exit 1
+fi
+
+echo
 echo 'All tests passed.'
