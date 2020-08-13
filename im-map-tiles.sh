@@ -136,14 +136,14 @@ while [[ $# -gt 0 ]]; do
     -*)
       failure "unknown argument $1"
       exit 1
-    ;;
+      ;;
     *)
-    POSITIONAL+=("$1")
-    shift
-    ;;
+      POSITIONAL+=("$1")
+      shift
+      ;;
   esac
 done
-set -- "${POSITIONAL[@]}" # restore positional parameters
+set -- "${POSITIONAL[@]}"
 
 input_image="${1}"
 output_directory="${2}"
@@ -185,7 +185,7 @@ if [ "${input_width}" != "${input_height}" ]; then
       "${square_image}"
     echo
   else
-    failure "<input_image> must be square (e.g. 1000x1000), but was ${input_width}x${input_height}. Maybe use the --square option."
+    failure "<input_image> must be square (e.g. 1000x1000). Maybe use the --square option."
   fi
 fi
 
@@ -220,12 +220,15 @@ if [ ! -z ${optimise} ]; then
   echo "OPTIMISING"
   if [[ "${format}" == "png" ]]; then
     if [[ "${optimise}" == "lossy" ]]; then
-      find "${output_directory}" -type f -regex '.+\.png' -print0 | xargs -0 -L 1 -I % pngquant --speed 1 --ext '.png' --quiet --force '%'
+      find "${output_directory}" -type f -regex '.+\.png' -print0 \
+        | xargs -0 -L 1 -I % pngquant --speed 1 --ext '.png' --quiet --force '%'
     else
-      find "${output_directory}" -type f -regex '.+\.png' -print0 | xargs -0 -L 1 -I % optipng -quiet -out '%' '%'
+      find "${output_directory}" -type f -regex '.+\.png' -print0 \
+        | xargs -0 -L 1 -I % optipng -quiet -out '%' '%'
     fi
   elif [[ "${format}" == "jpg" ]]; then
-    find "${output_directory}" -type f -regex '.+\.jpg' -print0 | xargs -0 -L 1 -I % jpegtran -optimize -copy none -progressive -outfile '%' '%'
+    find "${output_directory}" -type f -regex '.+\.jpg' -print0 \
+      | xargs -0 -L 1 -I % jpegtran -optimize -copy none -progressive -outfile '%' '%'
   else
     echo "  No optimiser found for output format (${format})."
   fi
