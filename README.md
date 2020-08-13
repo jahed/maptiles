@@ -16,7 +16,7 @@ NAME
 
 SYNOPSIS
   ./im-map-tiles.sh <input_image> [<options>] <output_directory>
- 
+
 DESCRIPTION
   Converts an image to map tiles to be used in Google Maps, Leaflet and other
   map rendering software.
@@ -24,23 +24,27 @@ DESCRIPTION
   For more information, visit: https://github.com/jahed/im-map-tiles
 
 OPTIONS
-  <input_image>          
+  <input_image>
     Image to convert into tiles. Must exist. Must be square.
-  
+
   <output_directory>
     Output directory. Must NOT exist, to avoid polluting existing directories.
-  
+
   -f, --format <format>
     Tile format (e.g. 'png'). Defaults to <input_image> file extension.
 
   -o, --optimise (lossy|lossless)
     Optimises tiles depending on the <format>.
-    
+
     png uses pngquant (lossy) or optipng (lossless)
     jpg uses jpegtran (lossless)
 
     Lossy optimisations may cause a size increase depending on each tile's
     complexity. Only use it for maps which store a lot of detail per tile.
+
+  -s, --square
+    Converts a non-square <input_image> into a square one, using whichever
+    dimension is largest and centering the image.
 
   -h, --help
     Prints this help message.
@@ -54,12 +58,12 @@ OUTPUT
   dimensions 2048x2048 will go up to 4 whereas an image with 3000x3000 will go
   up to 5. This is done to make the most out of the level of detail in the image
   without enlargening too much.
-  
+
   Each tile has a dimension of 256x256 and each {zoom_level} goes up in
   dimensions of 2 to the power of {zoom_level} (i.e. 1x1, 2x2, 4x4, 8x8, etc.).
   So overall, for each zoom level, the resulting map resolution will be 256x256,
   512x512, 1024x1024, 2048x2048 and so on.
-  
+
   If you're using Leaflet, I suggest you set this maximum zoom as your
   map.maxNativeZoom so you can have higher zoom levels without the need to
   download larger, low quality, upscaled tiles.
