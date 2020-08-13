@@ -33,6 +33,10 @@ OPTIONS
   -f, --format <format>
     Tile format (e.g. 'png'). Defaults to <input_image> file extension.
 
+  -b, --background <background>
+    Can be any ImageMagick-compatible colour. Defaults to 'none' (transparent).
+    See: https://imagemagick.org/script/color.php
+
   -o, --optimise (lossy|lossless)
     Optimises tiles depending on the <format>.
 

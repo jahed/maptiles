@@ -81,6 +81,11 @@ echo 'TEST: Generates using given format.'
 assert_dir format
 
 echo
+echo 'TEST: Sets background color.'
+./im-map-tiles.sh "${input_dir}/512x512.png" --background 'red' --format jpg "${output_dir}/background"
+assert_dir background
+
+echo
 echo 'TEST: Rejects non-existing source image.'
 assert_failure ./im-map-tiles.sh "${input_dir}/doesnotexist.png" "${output_dir}/doesnotexist"
 if [ -d "${output_dir}/doesnotexist" ]; then

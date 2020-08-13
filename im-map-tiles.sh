@@ -24,6 +24,10 @@ OPTIONS
   -f, --format <format>
     Tile format (e.g. 'png'). Defaults to <input_image> file extension.
 
+  -b, --background <background>
+    Can be any ImageMagick-compatible colour. Defaults to 'none' (transparent).
+    See: https://imagemagick.org/script/color.php
+
   -o, --optimise (lossy|lossless)
     Optimises tiles depending on the <format>.
 
@@ -95,6 +99,11 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    -b|--background)
+      background="$2"
+      shift
+      shift
+      ;;
     -o|--optimise)
       optimise="$2"
       shift
@@ -135,6 +144,10 @@ if [ -z ${format} ]; then
   format=$(identify -format '%[e]' "${input_image}")
 fi
 
+if [ -z ${background} ]; then
+  background="none"
+fi
+
 square_image="${input_image}"
 input_width=$(identify -format '%[w]' "${input_image}")
 input_height=$(identify -format '%[h]' "${input_image}")
@@ -169,9 +182,10 @@ for ((zoom_level=0, resize=0; resize < square_width; zoom_level++)); do
   mkdir "${zoom_dir}"
 
   convert "${square_image}" \
+    -background "${background}" \
+    -flatten \
     -colorspace RGB \
     -filter Lanczos2 \
-    -background none \
     -resize "${resize}x${resize}" \
     -colorspace sRGB \
     -crop "${tile_size}x${tile_size}" \
