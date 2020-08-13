@@ -202,12 +202,11 @@ for ((zoom_level=0, resize=0; resize < square_width; zoom_level++)); do
   mkdir "${zoom_dir}"
 
   convert "${square_image}" \
+    -colorspace sRGB \
     -background "${background}" \
     -flatten \
-    -colorspace RGB \
     -filter Lanczos2 \
     -resize "${resize}x${resize}" \
-    -colorspace sRGB \
     -crop "${tile_size}x${tile_size}" \
     -set filename:tile "%[fx:page.x/${tile_size}]_%[fx:page.y/${tile_size}]" \
     +repage \

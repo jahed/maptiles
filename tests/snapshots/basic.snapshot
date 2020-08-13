@@ -1,8 +1,8 @@
-80	./basic/
+64	./basic/
 16	./basic/0
 16	./basic/0/tile_0_0.png
-64	./basic/1
-16	./basic/1/tile_0_0.png
-16	./basic/1/tile_0_1.png
-16	./basic/1/tile_1_0.png
-16	./basic/1/tile_1_1.png
+48	./basic/1
+12	./basic/1/tile_0_0.png
+12	./basic/1/tile_0_1.png
+12	./basic/1/tile_1_0.png
+12	./basic/1/tile_1_1.png
