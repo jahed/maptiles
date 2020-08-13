@@ -72,6 +72,14 @@ OUTPUT
   map.maxNativeZoom so you can have higher zoom levels without the need to
   download larger, low quality, upscaled tiles.
 
+EXAMPLES
+  Take a detailed image and create optimised tiles to save space.
+    ./im-map-tiles.sh detailed_map.png --optimise lossy ./tiles
+
+  Take an rectangular image, square it with a red background and output it as
+  JPG tiles.
+    ./im-map-tiles.sh map.png --square --format jpg --background #ff0000 ./tiles
+
 DEPENDENCIES
   Required
     ImageMagick  https://www.imagemagick.org
