@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
+name="im-map-tiles"
 version="v1.0.0"
 
 function print_help {
   cat <<EOF
 NAME
-  im-map-tiles - Converts an image to map tiles
+  ${name} - Converts an image to map tiles
 
 SYNOPSIS
   ${0} <input_image> [<options>] <output_directory>
@@ -15,7 +16,7 @@ DESCRIPTION
   map rendering software.
 
   Version:   ${version}
-  Homepage:  https://github.com/jahed/im-map-tiles
+  Homepage:  https://github.com/jahed/${name}
   Donate:    https://jahed.dev/donate
 
 OPTIONS
@@ -72,11 +73,11 @@ OUTPUT
 
 EXAMPLES
   Take a detailed image and create optimised tiles to save space.
-    ./im-map-tiles.sh detailed_map.png --optimise lossy ./tiles
+    ${0} detailed_map.png --optimise lossy ./tiles
 
   Take an rectangular image, square it with a red background and output it as
   JPG tiles.
-    ./im-map-tiles.sh map.png --square --format jpg --background #ff0000 ./tiles
+    ${0} map.png --square --format jpg --background #ff0000 ./tiles
 
 DEPENDENCIES
   Required
@@ -110,7 +111,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     --version)
-      echo "im-map-tiles ${version}"
+      echo "${name} ${version}"
       exit 0
       ;;
     -f|--format)
