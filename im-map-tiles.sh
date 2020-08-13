@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+version="v1.0.0"
+
 function print_help {
   cat <<EOF
 NAME
@@ -12,7 +14,9 @@ DESCRIPTION
   Converts an image to map tiles to be used in Google Maps, Leaflet and other
   map rendering software.
 
-  For more information, visit: https://github.com/jahed/im-map-tiles
+  Version:   ${version}
+  Homepage:  https://github.com/jahed/im-map-tiles
+  Donate:    https://jahed.dev/donate
 
 OPTIONS
   <input_image>
@@ -43,6 +47,9 @@ OPTIONS
 
   -h, --help
     Prints this help message.
+
+  --version
+    Prints the version.
 
 OUTPUT
   Tiles in the <output_directory> will take the format of:
@@ -100,6 +107,10 @@ while [[ $# -gt 0 ]]; do
   case $key in
     -h|--help)
       print_help
+      exit 0
+      ;;
+    --version)
+      echo "im-map-tiles ${version}"
       exit 0
       ;;
     -f|--format)
