@@ -220,10 +220,10 @@ if [ ! -z ${optimise} ]; then
   if [[ "${format}" == "png" ]]; then
     if [[ "${optimise}" == "lossy" ]]; then
       find "${output_directory}" -type f -regex '.+\.png' -print0 \
-        | xargs -0 -L 1 -I % pngquant --speed 1 --ext '.png' --quiet --force '%'
+        | xargs -0 -L 1 -I % pngquant --strip --speed 1 --ext '.png' --quiet --force '%'
     else
       find "${output_directory}" -type f -regex '.+\.png' -print0 \
-        | xargs -0 -L 1 -I % optipng -quiet -out '%' '%'
+        | xargs -0 -L 1 -I % optipng -quiet -strip all -out '%' '%'
     fi
   elif [[ "${format}" == "jpg" ]]; then
     find "${output_directory}" -type f -regex '.+\.jpg' -print0 \
