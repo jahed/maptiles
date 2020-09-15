@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-input_dir="$(mktemp -d -t im-map-tiles-tests-inputs-XXX)"
 output_dir="$(mktemp -d -t im-map-tiles-tests-outputs-XXX)"
+input_dir="${output_dir}/input"
+mkdir "${input_dir}"
 
 function list_dir {
   pushd "${output_dir}" &> /dev/null
@@ -21,6 +22,13 @@ function assert_dir {
   else
     echo "${result}" > "${snapshot_file}"
     echo "Created snapshot ${snapshot_file}"
+  fi
+}
+
+function assert_not_dir {
+  if [ -d "${output_dir}/${1}" ]; then
+    echo "Directory should not exist."
+    exit 1
   fi
 }
 
@@ -49,11 +57,8 @@ create_input 512x512
 create_input 500x500
 create_input 250x500
 
-rm -rf "${output_dir}"
-mkdir "${output_dir}"
-
-echo "Inputs: ${input_dir}"
-echo "Outputs: ${output_dir}"
+echo "RUNNING TESTS"
+echo "  Outputs: ${output_dir}"
 
 echo
 echo 'TEST: Generates map tiles.'
@@ -88,10 +93,7 @@ assert_dir background
 echo
 echo 'TEST: Rejects non-existing source image.'
 assert_failure ./im-map-tiles.sh "${input_dir}/doesnotexist.png" "${output_dir}/doesnotexist"
-if [ -d "${output_dir}/doesnotexist" ]; then
-  echo "Output directory should not exist."
-  exit 1
-fi
+assert_not_dir doesnotexist
 
 echo
 echo 'TEST: Rejects existing destination directory.'
@@ -101,10 +103,7 @@ assert_failure ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/exist
 echo
 echo 'TEST: Rejects non-square source image.'
 assert_failure ./im-map-tiles.sh "${input_dir}/250x500.png" "${output_dir}/nonsquare"
-if [ -d "${output_dir}/nonsquare" ]; then
-  echo "Output directory should not exist."
-  exit 1
-fi
+assert_not_dir nonsquare
 
 echo
 echo 'TEST: Rejects missing arguments.'
@@ -113,10 +112,7 @@ assert_failure ./im-map-tiles.sh
 echo
 echo 'TEST: Rejects unknown arguments.'
 assert_failure ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/unknown" --unknown
-if [ -d "${output_dir}/unknown" ]; then
-  echo "Output directory should not exist."
-  exit 1
-fi
+assert_not_dir unknown
 
 echo
 echo 'All tests passed.'
