@@ -21,13 +21,14 @@ DESCRIPTION
   Converts an image to map tiles to be used in Google Maps, Leaflet and other
   map rendering software.
 
-  Version:   v1.0.0
+  Version:   v1.1.0
   Homepage:  https://github.com/jahed/im-map-tiles
   Donate:    https://jahed.dev/donate
 
 OPTIONS
   <input_image>
-    Image to convert into tiles. Must exist. Must be square.
+    Image to convert into tiles. Must exist. Must be square, otherwise
+    see --square option.
 
   <output_directory>
     Output directory. Must NOT exist, to avoid polluting existing directories.
@@ -42,8 +43,8 @@ OPTIONS
   -o, --optimise (lossy|lossless)
     Optimises tiles depending on the <format>.
 
-    png uses pngquant (lossy) or optipng (lossless)
-    jpg uses jpegtran (lossless)
+    * png uses pngquant (lossy) or optipng (lossless)
+    * jpg uses jpegtran (lossless)
 
     Lossy optimisations may cause a size increase depending on each tile's
     complexity. Only use it for maps which store a lot of detail per tile.
@@ -81,8 +82,7 @@ EXAMPLES
   Take a detailed image and create optimised tiles to save space.
     ./im-map-tiles.sh detailed_map.png --optimise lossy ./tiles
 
-  Take an rectangular image, square it with a red background and output it as
-  JPG tiles.
+  Take an image, square it with a red background and output it as JPG tiles.
     ./im-map-tiles.sh map.png --square --format jpg --background #ff0000 ./tiles
 
 DEPENDENCIES

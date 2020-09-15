@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 name="im-map-tiles"
-version="v1.0.0"
+version="v1.1.0"
 
 function print_help {
   cat <<EOF
@@ -21,7 +21,8 @@ DESCRIPTION
 
 OPTIONS
   <input_image>
-    Image to convert into tiles. Must exist. Must be square.
+    Image to convert into tiles. Must exist. Must be square, otherwise
+    see --square option.
 
   <output_directory>
     Output directory. Must NOT exist, to avoid polluting existing directories.
@@ -36,8 +37,8 @@ OPTIONS
   -o, --optimise (lossy|lossless)
     Optimises tiles depending on the <format>.
 
-    png uses pngquant (lossy) or optipng (lossless)
-    jpg uses jpegtran (lossless)
+    * png uses pngquant (lossy) or optipng (lossless)
+    * jpg uses jpegtran (lossless)
 
     Lossy optimisations may cause a size increase depending on each tile's
     complexity. Only use it for maps which store a lot of detail per tile.
@@ -75,8 +76,7 @@ EXAMPLES
   Take a detailed image and create optimised tiles to save space.
     ${0} detailed_map.png --optimise lossy ./tiles
 
-  Take an rectangular image, square it with a red background and output it as
-  JPG tiles.
+  Take an image, square it with a red background and output it as JPG tiles.
     ${0} map.png --square --format jpg --background #ff0000 ./tiles
 
 DEPENDENCIES
