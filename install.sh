@@ -2,6 +2,6 @@
 set -euo pipefail
 
 echo "Creating symlink"
-ln -s "${PWD}/map-tiles" ~/.local/bin/map-tiles
+ln -s "${PWD}/maptiles" ~/.local/bin/maptiles
 
 echo "Done."
