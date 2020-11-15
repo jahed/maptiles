@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-name="im-map-tiles"
+name="maptiles"
 version="v1.1.0"
 
 function print_help {
   cat <<EOF
 NAME
-  ${name} - Converts an image to map tiles
+  ${name} - converts an image to map tiles
 
 SYNOPSIS
   ${0} <input_image> [<options>] <output_directory>

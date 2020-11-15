@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-output_dir="$(mktemp -d -t im-map-tiles-tests-outputs-XXX)"
+output_dir="$(mktemp -d -t maptiles-tests-outputs-XXX)"
 input_dir="${output_dir}/input"
 mkdir "${input_dir}"
 
@@ -62,56 +62,56 @@ echo "  Outputs: ${output_dir}"
 
 echo
 echo 'TEST: Generates map tiles.'
-./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/basic"
+./maptiles "${input_dir}/512x512.png" "${output_dir}/basic"
 assert_dir basic
 
 echo
 echo 'TEST: Squares source image.'
-./im-map-tiles.sh "${input_dir}/250x500.png" --square "${output_dir}/square"
+./maptiles "${input_dir}/250x500.png" --square "${output_dir}/square"
 assert_dir square
 
 echo
 echo 'TEST: Optimises map tiles.'
-./im-map-tiles.sh "${input_dir}/512x512.png" --optimise "lossy" "${output_dir}/optimise"
+./maptiles "${input_dir}/512x512.png" --optimise "lossy" "${output_dir}/optimise"
 assert_dir optimise
 
 echo
 echo 'TEST: Upscales source image.'
-./im-map-tiles.sh "${input_dir}/500x500.png" "${output_dir}/scaleup"
+./maptiles "${input_dir}/500x500.png" "${output_dir}/scaleup"
 assert_dir scaleup
 
 echo
 echo 'TEST: Generates using given format.'
-./im-map-tiles.sh "${input_dir}/512x512.png" --format jpg "${output_dir}/format"
+./maptiles "${input_dir}/512x512.png" --format jpg "${output_dir}/format"
 assert_dir format
 
 echo
 echo 'TEST: Sets background color.'
-./im-map-tiles.sh "${input_dir}/512x512.png" --background 'red' --format jpg "${output_dir}/background"
+./maptiles "${input_dir}/512x512.png" --background 'red' --format jpg "${output_dir}/background"
 assert_dir background
 
 echo
 echo 'TEST: Rejects non-existing source image.'
-assert_failure ./im-map-tiles.sh "${input_dir}/doesnotexist.png" "${output_dir}/doesnotexist"
+assert_failure ./maptiles "${input_dir}/doesnotexist.png" "${output_dir}/doesnotexist"
 assert_not_dir doesnotexist
 
 echo
 echo 'TEST: Rejects existing destination directory.'
 mkdir "${output_dir}/exists"
-assert_failure ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/exists"
+assert_failure ./maptiles "${input_dir}/512x512.png" "${output_dir}/exists"
 
 echo
 echo 'TEST: Rejects non-square source image.'
-assert_failure ./im-map-tiles.sh "${input_dir}/250x500.png" "${output_dir}/nonsquare"
+assert_failure ./maptiles "${input_dir}/250x500.png" "${output_dir}/nonsquare"
 assert_not_dir nonsquare
 
 echo
 echo 'TEST: Rejects missing arguments.'
-assert_failure ./im-map-tiles.sh
+assert_failure ./maptiles
 
 echo
 echo 'TEST: Rejects unknown arguments.'
-assert_failure ./im-map-tiles.sh "${input_dir}/512x512.png" "${output_dir}/unknown" --unknown
+assert_failure ./maptiles "${input_dir}/512x512.png" "${output_dir}/unknown" --unknown
 assert_not_dir unknown
 
 echo

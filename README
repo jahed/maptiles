@@ -1,24 +1,15 @@
-# im-map-tiles
-
-Converts an image to map tiles to be used in Google Maps, Leaflet and other map
-rendering software.
-
-## Usage
-
-```
-$ ./im-map-tiles.sh --help
 NAME
-  im-map-tiles - Converts an image to map tiles
+  maptiles - converts an image to map tiles
 
 SYNOPSIS
-  ./im-map-tiles.sh <input_image> [<options>] <output_directory>
+  ./maptiles <input_image> [<options>] <output_directory>
 
 DESCRIPTION
   Converts an image to map tiles to be used in Google Maps, Leaflet and other
   map rendering software.
 
   Version:   v1.1.0
-  Homepage:  https://github.com/jahed/im-map-tiles
+  Homepage:  https://github.com/jahed/maptiles
   Donate:    https://jahed.dev/donate
 
 OPTIONS
@@ -76,10 +67,10 @@ OUTPUT
 
 EXAMPLES
   Take a detailed image and create optimised tiles to save space.
-    ./im-map-tiles.sh detailed_map.png --optimise lossy ./tiles
+    ./maptiles detailed_map.png --optimise lossy ./tiles
 
   Take an image, square it with a red background and output it as JPG tiles.
-    ./im-map-tiles.sh map.png --square --format jpg --background #ff0000 ./tiles
+    ./maptiles map.png --square --format jpg --background #ff0000 ./tiles
 
 DEPENDENCIES
   Required
@@ -94,8 +85,3 @@ DEPENDENCIES
 COPYRIGHT
   The MIT License (MIT)
   Copyright (c) 2020 Jahed Ahmed
-```
-
-## License
-
-[MIT](LICENSE)
