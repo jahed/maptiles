@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
+cd "$(dirname "${0}")/.."
 echo "Make sure you've bumped the version BEFORE running this script."
 
 echo
@@ -8,7 +8,7 @@ echo "GENERATING README"
 ./maptiles --help > README
 git add maptiles README
 
-./tests.sh
+./tests/tests.sh
 
 echo
 echo "COMMITTING"

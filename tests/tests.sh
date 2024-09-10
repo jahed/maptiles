@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
+cd "$(dirname "${0}")/.."
 output_dir="$(mktemp -d -t maptiles-tests-outputs-XXX)"
 input_dir="${output_dir}/input"
 mkdir "${input_dir}"
@@ -89,6 +89,11 @@ echo
 echo 'TEST: Sets background color.'
 ./maptiles "${input_dir}/512x512.png" --background 'red' --format jpg "${output_dir}/background"
 assert_dir background
+
+echo
+echo 'TEST: Generates json.'
+./maptiles "${input_dir}/512x512.png" --json '{b}/' "${output_dir}/json"
+assert_dir json
 
 echo
 echo 'TEST: Rejects non-existing source image.'

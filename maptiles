@@ -189,7 +189,6 @@ if [ -z ${background} ]; then
   background="none"
 fi
 
-mkdir -p "${output_directory}"
 echo "GENERATING"
 
 square_image="${input_image}"
@@ -199,6 +198,7 @@ if [ "${input_width}" != "${input_height}" ]; then
   if [ ! -z ${square} ]; then
     square_image="${output_directory}/square.png"
     echo "  ${square_image}"
+    mkdir -p "${output_directory}"
     square_dim="$(identify -format "%[fx:max(w,h)]x%[fx:max(w,h)]+0+0" "${input_image}")"
     convert "${input_image}" \
       -gravity center \
@@ -212,6 +212,7 @@ if [ "${input_width}" != "${input_height}" ]; then
   fi
 fi
 
+mkdir -p "${output_directory}"
 square_width=$(identify -format '%[w]' "${square_image}")
 tile_size=256
 for ((zoom_level=0, resize=0; resize < square_width; zoom_level++)); do
