@@ -92,8 +92,13 @@ assert_dir background
 
 echo
 echo 'TEST: Generates json.'
-./maptiles "${input_dir}/512x512.png" --json '{b}/' "${output_dir}/json"
+./maptiles "${input_dir}/512x512.png" --json 'https://example.com/' "${output_dir}/json"
 assert_dir json
+
+echo
+echo 'TEST: Generates json with empty base.'
+./maptiles "${input_dir}/512x512.png" --json '' "${output_dir}/json_empty_base"
+assert_dir json_empty_base
 
 echo
 echo 'TEST: Rejects non-existing source image.'

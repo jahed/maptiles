@@ -146,6 +146,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -j|--json)
+      json="true"
       json_base="$2"
       shift
       shift
@@ -241,7 +242,7 @@ done
 
 max_zoom="$((${zoom_level} - 1))"
 
-if [ ! -z ${json_base} ]; then
+if [ ! -z ${json} ]; then
   json_path="${output_directory}/tile.json"
   echo "  ${json_path}"
   cat > "${json_path}" <<EOF
