@@ -231,14 +231,14 @@ if [ ! -z ${optimise} ]; then
   if [[ "${format}" == "png" ]]; then
     if [[ "${optimise}" == "lossy" ]]; then
       find "${output_directory}" -type f -regex '.+\.png' -print0 \
-        | xargs -0 -L 1 -I % pngquant --strip --speed 1 --ext '.png' --quiet --force '%'
+        | xargs -0 -I % pngquant --strip --speed 1 --ext '.png' --quiet --force '%'
     else
       find "${output_directory}" -type f -regex '.+\.png' -print0 \
-        | xargs -0 -L 1 -I % optipng -quiet -strip all -out '%' '%'
+        | xargs -0 -I % optipng -quiet -strip all -out '%' '%'
     fi
   elif [[ "${format}" == "jpg" ]]; then
     find "${output_directory}" -type f -regex '.+\.jpg' -print0 \
-      | xargs -0 -L 1 -I % jpegtran -optimize -copy none -progressive -outfile '%' '%'
+      | xargs -0 -I % jpegtran -optimize -copy none -progressive -outfile '%' '%'
   else
     echo "  No optimiser found for output format (${format})."
   fi
