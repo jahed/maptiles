@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eo pipefail
 
 name="maptiles"
 version="v3.0.0"
@@ -36,16 +37,20 @@ OPTIONS
 
   -o, --optimise (lossy|lossless)
     Optimises tiles depending on the <format>.
-
     * png uses pngquant (lossy) or optipng (lossless)
     * jpg uses jpegtran (lossless)
-
     Lossy optimisations may cause a size increase depending on each tile's
     complexity. Only use it for maps which store a lot of detail per tile.
 
   -s, --square
     Converts a non-square <input_image> into a square one, using whichever
     dimension is largest and centering the image.
+
+  -j, --json <base>
+    Creates a TileJSON v2.2.0 file. <base> is used to create the tiles URL:
+      <base><output_directory>/{z}/{x}/{y}.<format>
+    Use a placeholder such as '{b}' or '' to complete the URL later.
+    See: https://github.com/mapbox/tilejson-spec/tree/master/2.2.0
 
   -h, --help
     Prints this help message.
@@ -55,22 +60,22 @@ OPTIONS
 
 OUTPUT
   Tiles in the <output_directory> will take the format of:
-  <output_directory>/{zoom_level}/tile_{x}_{y}.<format>
+    <output_directory>/{z}/{x}/{y}.<format>
 
-  {zoom_level} will start at 0 and go up to the maximum zoom possible for the
+  {z} will start at 0 and go up to the maximum zoom possible for the
   <input_image> rounding up to the next zoom level. An <input_image> with
   dimensions 2048x2048 will go up to 4 whereas an image with 3000x3000 will go
   up to 5. This is done to make the most out of the level of detail in the image
   without enlargening too much.
 
-  Each tile has a dimension of 256x256 and each {zoom_level} goes up in
-  dimensions of 2 to the power of {zoom_level} (i.e. 1x1, 2x2, 4x4, 8x8, etc.).
+  Each tile has a dimension of 256x256 and each {z} goes up in
+  dimensions of 2 to the power of {z} (i.e. 1x1, 2x2, 4x4, 8x8, etc.).
   So overall, for each zoom level, the resulting map resolution will be 256x256,
   512x512, 1024x1024, 2048x2048 and so on.
 
   If you're using Leaflet, I suggest you set this maximum zoom as your
   map.maxNativeZoom so you can have higher zoom levels without the need to
-  download larger, low quality, upscaled tiles.
+  download larger, low quality, upscaled tiles. Alternatively, use the TileJSON.
 
 EXAMPLES
   Take a detailed image and create optimised tiles to save space.
@@ -90,7 +95,7 @@ DEPENDENCIES
     jpegtran    https://jpegclub.org/jpegtran/
 
 COPYRIGHT
-  Copyright (C) 2020 Jahed Ahmed
+  Copyright (C) 2024 Jahed Ahmed
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -140,6 +145,11 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    -j|--json)
+      json_base="$2"
+      shift
+      shift
+      ;;
     -s|--square)
       square="true"
       shift
@@ -179,15 +189,17 @@ if [ -z ${background} ]; then
   background="none"
 fi
 
+mkdir -p "${output_directory}"
+echo "GENERATING"
+
 square_image="${input_image}"
 input_width=$(identify -format '%[w]' "${input_image}")
 input_height=$(identify -format '%[h]' "${input_image}")
 if [ "${input_width}" != "${input_height}" ]; then
   if [ ! -z ${square} ]; then
-    echo "SQUARING"
-    mkdir -p "${output_directory}"
-    square_dim="$(identify -format "%[fx:max(w,h)]x%[fx:max(w,h)]+0+0" "${input_image}")"
     square_image="${output_directory}/square.png"
+    echo "  ${square_image}"
+    square_dim="$(identify -format "%[fx:max(w,h)]x%[fx:max(w,h)]+0+0" "${input_image}")"
     convert "${input_image}" \
       -gravity center \
       -background none \
@@ -200,8 +212,6 @@ if [ "${input_width}" != "${input_height}" ]; then
   fi
 fi
 
-echo "GENERATING"
-mkdir -p "${output_directory}"
 square_width=$(identify -format '%[w]' "${square_image}")
 tile_size=256
 for ((zoom_level=0, resize=0; resize < square_width; zoom_level++)); do
@@ -212,6 +222,10 @@ for ((zoom_level=0, resize=0; resize < square_width; zoom_level++)); do
   echo "  ${zoom_dir}"
   mkdir "${zoom_dir}"
 
+  for ((x=0; x < dimensions; x++)); do
+    mkdir "${zoom_dir}/${x}"
+  done
+
   convert "${square_image}" \
     -colorspace sRGB \
     -background "${background}" \
@@ -219,11 +233,30 @@ for ((zoom_level=0, resize=0; resize < square_width; zoom_level++)); do
     -filter Lanczos2 \
     -resize "${resize}x${resize}" \
     -crop "${tile_size}x${tile_size}" \
-    -set filename:tile "%[fx:page.x/${tile_size}]_%[fx:page.y/${tile_size}]" \
+    -set filename:tile "%[fx:page.x/${tile_size}]/%[fx:page.y/${tile_size}]" \
     +repage \
     +adjoin \
-    "${output_directory}/${zoom_level}/tile_%[filename:tile].${format}"
+    "${output_directory}/${zoom_level}/%[filename:tile].${format}"
 done
+
+max_zoom="$((${zoom_level} - 1))"
+
+if [ ! -z ${json_base} ]; then
+  json_path="${output_directory}/tile.json"
+  echo "  ${json_path}"
+  cat > "${json_path}" <<EOF
+{
+  "tilejson": "2.2.0",
+  "name": "${output_directory}",
+  "version": "1.0.0",
+  "attribution": "<a href='https://github.com/jahed/maptiles'>jahed/maptiles</a>",
+  "tiles": [
+    "${json_base}${output_directory}/{z}/{x}/{y}.${format}"
+  ],
+  "maxzoom": "${max_zoom}"
+}
+EOF
+fi
 echo
 
 if [ ! -z ${optimise} ]; then
@@ -234,7 +267,7 @@ if [ ! -z ${optimise} ]; then
         | xargs -0 -I % pngquant --strip --speed 1 --ext '.png' --quiet --force '%'
     else
       find "${output_directory}" -type f -regex '.+\.png' -print0 \
-        | xargs -0 -I % optipng -quiet -strip all -out '%' '%'
+        | xargs -0 -I % optipng -quiet -strip all '%'
     fi
   elif [[ "${format}" == "jpg" ]]; then
     find "${output_directory}" -type f -regex '.+\.jpg' -print0 \
@@ -250,7 +283,7 @@ RESULT
   Input Image:       ${input_image}
   Output Directory:  ${output_directory}
   Format:            ${format}
-  Maximum Zoom:      $((${zoom_level} - 1))
+  Maximum Zoom:      ${max_zoom}
 
 Done.
 EOF
