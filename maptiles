@@ -2,7 +2,7 @@
 set -eo pipefail
 
 name="maptiles"
-version="v4.0.0"
+version="v4.0.1"
 
 function print_help {
   cat <<EOF
