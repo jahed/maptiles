@@ -51,7 +51,7 @@ OPTIONS
     Prints this help message.
 
   --version
-    Prints the version.
+    Prints the name and version.
 
 OUTPUT
   Tiles in the <output_directory> will take the format of:
