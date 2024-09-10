@@ -206,7 +206,6 @@ if [ "${input_width}" != "${input_height}" ]; then
       -extent "${square_dim}" \
       +repage \
       "${square_image}"
-    echo
   else
     failure "<input_image> must be square (e.g. 1000x1000). Maybe use the --square option."
   fi
