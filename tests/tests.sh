@@ -67,7 +67,7 @@ assert_dir basic
 
 echo
 echo 'TEST: Squares source image.'
-./maptiles "${input_dir}/250x500.png" --square "${output_dir}/square"
+./maptiles "${input_dir}/250x500.png" "${output_dir}/square"
 assert_dir square
 
 echo
@@ -109,11 +109,6 @@ echo
 echo 'TEST: Rejects existing destination directory.'
 mkdir "${output_dir}/exists"
 assert_failure ./maptiles "${input_dir}/512x512.png" "${output_dir}/exists"
-
-echo
-echo 'TEST: Rejects non-square source image.'
-assert_failure ./maptiles "${input_dir}/250x500.png" "${output_dir}/nonsquare"
-assert_not_dir nonsquare
 
 echo
 echo 'TEST: Rejects missing arguments.'
